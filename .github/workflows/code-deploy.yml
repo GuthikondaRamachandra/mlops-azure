@@ -26,12 +26,34 @@ jobs:
         echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
         echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
 
-    - name: Run Databricks Training Job
+    - name: Upload Notebooks
       run: |
-        if [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
-          databricks jobs run-now --job-id ${{ secrets.JOB_ID_DEV }}
-        elif [[ "${{ github.ref }}" == "refs/heads/qa" ]]; then
-          databricks jobs run-now --job-id ${{ secrets.JOB_ID_QA }}
-        elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-          databricks jobs run-now --job-id ${{ secrets.JOB_ID_PROD }}
-        fi
+        databricks workspace mkdirs /Shared/mymode
+        databricks workspace import mymode/notebooks/build_model.py /Shared/mymode/build_model -f SOURCE -l PYTHON -o
+        databricks workspace import mymode/notebooks/batch_prediction.py /Shared/mymode/batch_prediction -f SOURCE -l PYTHON -o
+
+    - name: Run Notebooks
+      run: |
+        databricks runs submit --json '{
+          "run_name": "Run build_model",
+          "new_cluster": {
+            "spark_version": "13.3.x-scala2.12",
+            "node_type_id": "Standard_DS3_v2",
+            "num_workers": 1
+          },
+          "notebook_task": {
+            "notebook_path": "/Shared/mymode/build_model"
+          }
+        }'
+
+        databricks runs submit --json '{
+          "run_name": "Run batch_prediction",
+          "new_cluster": {
+            "spark_version": "13.3.x-scala2.12",
+            "node_type_id": "Standard_DS3_v2",
+            "num_workers": 1
+          },
+          "notebook_task": {
+            "notebook_path": "/Shared/mymode/batch_prediction"
+          }
+        }'
