@@ -11,42 +11,30 @@ provider "azurerm" {
   features {}
 }
 
+resource "azurerm_resource_group" "mlops_env" {
+  for_each = toset(var.environments)
 
-
-variable "location" {
-  default = "westeurope"
-}
-
-resource "azurerm_resource_group" "mlops_rg" {
-  name     = "rg-mlops-platform"
+  name     = "rg-${var.project_name}-${each.key}"
   location = var.location
 }
 
-# Create 3 Key Vaults: dev, qa, prod
-resource "azurerm_key_vault" "dev" {
-  name                        = "kv-mlops-dev"
+resource "azurerm_key_vault" "mlops_env_kv" {
+  for_each = toset(var.environments)
+
+  name                        = "kv-${var.project_name}-${each.key}"
   location                    = var.location
-  resource_group_name         = azurerm_resource_group.mlops_rg.name
+  resource_group_name         = azurerm_resource_group.mlops_env[each.key].name
   tenant_id                   = var.tenant_id
   sku_name                    = "standard"
+  soft_delete_enabled         = true
   purge_protection_enabled    = false
 }
 
+resource "azurerm_databricks_workspace" "mlops_env_ws" {
+  for_each = toset(var.environments)
 
-resource "azurerm_key_vault" "qa" {
-  name                        = "kv-mlops-qa"
-  location                    = var.location
-  resource_group_name         = azurerm_resource_group.mlops_rg.name
-  tenant_id                   = var.tenant_id
-  sku_name                    = "standard"
-  purge_protection_enabled    = false
+  name                = "databricks-${var.project_name}-${each.key}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.mlops_env[each.key].name
+  sku                 = "premium"
 }
-resource "azurerm_key_vault" "prod" {
-  name                        = "kv-mlops-prod"
-  location                    = var.location
-  resource_group_name         = azurerm_resource_group.mlops_rg.name
-  tenant_id                   = var.tenant_id
-  sku_name                    = "standard"
-  purge_protection_enabled    = false
-}
-
