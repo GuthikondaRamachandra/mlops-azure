@@ -35,6 +35,9 @@ resource "azurerm_databricks_workspace" "mlops_env_ws" {
   name                          = "databricks-${var.project_name}-${each.key}"
   location                      = var.location
   resource_group_name           = azurerm_resource_group.mlops_env[each.key].name
-  sku                           = "premium"
+  sku                           = "standard"
   managed_resource_group_name   = "databricks-rg-${var.project_name}-${each.key}"
+  tags = {
+    environment = each.key
+  }
 }
