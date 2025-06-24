@@ -29,7 +29,7 @@ jobs:
       run: |
         databricks workspace mkdirs /Shared/mymode
         databricks workspace import mymode/notebooks/build_model.py /Shared/mymode/build_model -f SOURCE -l PYTHON -o
-        databricks workspace import mymode/notebooks/batch_prediction.py /Shared/mymode/batch_prediction -f SOURCE -l PYTHON -o
+        databricks workspace import mymode/notebooks/batc_prediction.py /Shared/mymode/batch_prediction -f SOURCE -l PYTHON -o
 
     - name: Run Notebooks
       run: |
