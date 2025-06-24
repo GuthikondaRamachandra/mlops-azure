@@ -29,7 +29,6 @@ resource "azurerm_key_vault" "dev" {
   resource_group_name         = azurerm_resource_group.mlops_rg.name
   tenant_id                   = var.tenant_id
   sku_name                    = "standard"
-  soft_delete_enabled         = true
   purge_protection_enabled    = false
 }
 
@@ -40,7 +39,6 @@ resource "azurerm_key_vault" "qa" {
   resource_group_name         = azurerm_resource_group.mlops_rg.name
   tenant_id                   = var.tenant_id
   sku_name                    = "standard"
-  soft_delete_enabled         = true
   purge_protection_enabled    = false
 }
 resource "azurerm_key_vault" "prod" {
@@ -49,7 +47,6 @@ resource "azurerm_key_vault" "prod" {
   resource_group_name         = azurerm_resource_group.mlops_rg.name
   tenant_id                   = var.tenant_id
   sku_name                    = "standard"
-  soft_delete_enabled         = true
   purge_protection_enabled    = false
 }
 
