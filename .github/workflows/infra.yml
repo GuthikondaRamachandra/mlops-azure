@@ -1,4 +1,4 @@
-name: Infra Deployment
+name: Terraform Infra Deploy
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - 'infra/**'
 
 jobs:
-  deploy:
+  terraform-deploy:
     runs-on: ubuntu-latest
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -15,7 +15,8 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
