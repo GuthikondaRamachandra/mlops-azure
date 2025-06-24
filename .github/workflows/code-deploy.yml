@@ -6,7 +6,6 @@ on:
       - dev
       - qa
       - main
-
 jobs:
   deploy-model:
     runs-on: ubuntu-latest
