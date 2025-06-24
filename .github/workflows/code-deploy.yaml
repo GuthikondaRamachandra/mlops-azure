@@ -1,0 +1,37 @@
+name: Databricks Model Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - qa
+      - main
+
+jobs:
+  deploy-model:
+    runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Databricks CLI
+      run: |
+        pip install databricks-cli
+        databricks configure --token <<EOF
+        ${{ secrets.DATABRICKS_HOST }}
+        ${{ secrets.DATABRICKS_TOKEN }}
+        EOF
+
+    - name: Run Databricks Training Job
+      run: |
+        if [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+          databricks jobs run-now --job-id ${{ secrets.JOB_ID_DEV }}
+        elif [[ "${{ github.ref }}" == "refs/heads/qa" ]]; then
+          databricks jobs run-now --job-id ${{ secrets.JOB_ID_QA }}
+        elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          databricks jobs run-now --job-id ${{ secrets.JOB_ID_PROD }}
+        fi
