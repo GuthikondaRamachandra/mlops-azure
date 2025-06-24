@@ -33,6 +33,7 @@ resource "azurerm_key_vault" "dev" {
   purge_protection_enabled    = false
 }
 
+
 resource "azurerm_key_vault" "qa" {
   name                        = "kv-mlops-qa"
   location                    = var.location
