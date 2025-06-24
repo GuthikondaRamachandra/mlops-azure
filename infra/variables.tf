@@ -18,7 +18,7 @@ variable "tenant_id" {
 variable "pricing_tier" {
   description = "Databricks workspace pricing tier"
   type        = string
-  default     = "premium"
+  default     = "standard"
 }
 
 variable "environments" {
