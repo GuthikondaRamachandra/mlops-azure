@@ -9,6 +9,7 @@ terraform {
 provider "azurerm" {
   features {}
 }
+
 resource "azurerm_resource_group" "mlops_env" {
   for_each = toset(var.environments)
 
