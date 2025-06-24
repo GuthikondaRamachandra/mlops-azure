@@ -21,10 +21,10 @@ jobs:
     - name: Setup Databricks CLI
       run: |
         pip install databricks-cli
-        databricks configure --token <<EOF
-        ${{ secrets.DATABRICKS_HOST }}
-        ${{ secrets.DATABRICKS_TOKEN }}
-        EOF
+        mkdir -p ~/.databricks
+        echo "[DEFAULT]" > ~/.databrickscfg
+        echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
+        echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
 
     - name: Run Databricks Training Job
       run: |
