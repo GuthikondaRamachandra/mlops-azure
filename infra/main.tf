@@ -25,7 +25,6 @@ resource "azurerm_key_vault" "mlops_env_kv" {
   resource_group_name         = azurerm_resource_group.mlops_env[each.key].name
   tenant_id                   = var.tenant_id
   sku_name                    = "standard"
-  soft_delete_enabled         = true
   purge_protection_enabled    = false
 }
 
