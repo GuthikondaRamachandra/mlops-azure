@@ -31,7 +31,6 @@ resource "azurerm_key_vault" "qa" {
   soft_delete_enabled         = true
   purge_protection_enabled    = false
 }
-
 resource "azurerm_key_vault" "prod" {
   name                        = "kv-mlops-prod"
   location                    = var.location
