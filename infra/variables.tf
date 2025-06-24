@@ -7,7 +7,7 @@ variable "location" {
 variable "project_name" {
   description = "Base name for resources"
   type        = string
-  default     = "MyProject"
+  default     = "mlops-azure"
 }
 
 variable "tenant_id" {
