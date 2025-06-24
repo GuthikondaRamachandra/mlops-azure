@@ -1,6 +1,7 @@
 provider "azurerm" {
-  features = {}
+  features {}
 }
+
 
 variable "location" {
   default = "westeurope"
