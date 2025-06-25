@@ -1,0 +1,72 @@
+name: Databricks Model Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - qa
+      - main
+
+jobs:
+  deploy-model:
+    runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Databricks CLI
+      run: |
+        pip install databricks-cli
+        mkdir -p ~/.databricks
+        echo "[DEFAULT]" > ~/.databrickscfg
+        echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
+        echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
+
+    - name: Upload Notebooks
+      run: |
+        databricks workspace mkdirs /Shared/mymode
+        databricks workspace import mymode/notebooks/build_model.py /Shared/mymode/build_model -f SOURCE -l PYTHON -o
+        databricks workspace import mymode/notebooks/batc_prediction.py /Shared/mymode/batch_prediction -f SOURCE -l PYTHON -o
+
+    - name: Run Notebooks
+      run: |
+        cat <<EOF > batch_prediction.json
+        {
+          "run_name": "Run batch_prediction",
+          "new_cluster": {
+            "num_workers": 0,
+            "spark_version": "15.4.x-scala2.12",
+            "spark_conf": {
+              "spark.master": "local[*, 4]",
+              "spark.databricks.cluster.profile": "singleNode"
+            },
+            "azure_attributes": {
+              "first_on_demand": 1,
+              "availability": "SPOT_WITH_FALLBACK_AZURE",
+              "spot_bid_max_price": -1
+            },
+            "node_type_id": "Standard_D4ds_v5",
+            "driver_node_type_id": "Standard_D4ds_v5",
+            "custom_tags": {
+              "ResourceClass": "SingleNode"
+            },
+            "spark_env_vars": {
+              "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+            },
+            "enable_elastic_disk": true,
+            "data_security_mode": "SINGLE_USER",
+            "runtime_engine": "PHOTON"
+          },
+          "notebook_task": {
+            "notebook_path": "/Shared/mymode/batch_prediction"
+          }
+        }
+        EOF
+        databricks runs submit --json-file batch_prediction.json
+
+        
+
