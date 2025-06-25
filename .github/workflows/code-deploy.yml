@@ -34,11 +34,11 @@ jobs:
 
     - name: Run Notebooks
       run: |
-        databricks runs submit --json '{
+        cat <<EOF > build_model.json
+        {
           "run_name": "Run build_model",
           "new_cluster": {
             "num_workers": 0,
-            "cluster_name": "LAKSHMI PRASANNA GUTHIKONDA's Cluster",
             "spark_version": "15.4.x-scala2.12",
             "spark_conf": {
               "spark.master": "local[*, 4]",
@@ -69,13 +69,16 @@ jobs:
           "notebook_task": {
             "notebook_path": "/Shared/mymode/build_model"
           }
-        }'
+        }
+        EOF
 
-        databricks runs submit --json '{
+        databricks runs submit --json-file build_model.json
+
+        cat <<EOF > batch_prediction.json
+        {
           "run_name": "Run batch_prediction",
           "new_cluster": {
             "num_workers": 0,
-            "cluster_name": "LAKSHMI PRASANNA GUTHIKONDA's Cluster",
             "spark_version": "15.4.x-scala2.12",
             "spark_conf": {
               "spark.master": "local[*, 4]",
@@ -106,4 +109,7 @@ jobs:
           "notebook_task": {
             "notebook_path": "/Shared/mymode/batch_prediction"
           }
-        }'
+        }
+        EOF
+
+        databricks runs submit --json-file batch_prediction.json
