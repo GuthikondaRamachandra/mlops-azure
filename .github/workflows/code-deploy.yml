@@ -6,6 +6,7 @@ on:
       - dev
       - qa
       - main
+
 jobs:
   deploy-model:
     runs-on: ubuntu-latest
@@ -29,16 +30,41 @@ jobs:
       run: |
         databricks workspace mkdirs /Shared/mymode
         databricks workspace import mymode/notebooks/build_model.py /Shared/mymode/build_model -f SOURCE -l PYTHON -o
-        databricks workspace import mymode/notebooks/batc_prediction.py /Shared/mymode/batch_prediction -f SOURCE -l PYTHON -o
+        databricks workspace import mymode/notebooks/batch_prediction.py /Shared/mymode/batch_prediction -f SOURCE -l PYTHON -o
 
     - name: Run Notebooks
       run: |
         databricks runs submit --json '{
           "run_name": "Run build_model",
           "new_cluster": {
-            "spark_version": "13.3.x-scala2.12",
-            "node_type_id": "Standard_DS3_v2",
-            "num_workers": 1
+            "num_workers": 0,
+            "cluster_name": "LAKSHMI PRASANNA GUTHIKONDA's Cluster",
+            "spark_version": "15.4.x-scala2.12",
+            "spark_conf": {
+              "spark.master": "local[*, 4]",
+              "spark.databricks.cluster.profile": "singleNode"
+            },
+            "azure_attributes": {
+              "first_on_demand": 1,
+              "availability": "SPOT_WITH_FALLBACK_AZURE",
+              "spot_bid_max_price": -1
+            },
+            "node_type_id": "Standard_D4ds_v5",
+            "driver_node_type_id": "Standard_D4ds_v5",
+            "custom_tags": {
+              "ResourceClass": "SingleNode"
+            },
+            "spark_env_vars": {
+              "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+            },
+            "autotermination_minutes": 120,
+            "enable_elastic_disk": true,
+            "init_scripts": [],
+            "single_user_name": "mail2prasanna.g@gmail.com",
+            "enable_local_disk_encryption": false,
+            "data_security_mode": "SINGLE_USER",
+            "runtime_engine": "PHOTON",
+            "assigned_principal": "user:mail2prasanna.g@gmail.com"
           },
           "notebook_task": {
             "notebook_path": "/Shared/mymode/build_model"
@@ -48,9 +74,34 @@ jobs:
         databricks runs submit --json '{
           "run_name": "Run batch_prediction",
           "new_cluster": {
-            "spark_version": "13.3.x-scala2.12",
-            "node_type_id": "Standard_DS3_v2",
-            "num_workers": 1
+            "num_workers": 0,
+            "cluster_name": "LAKSHMI PRASANNA GUTHIKONDA's Cluster",
+            "spark_version": "15.4.x-scala2.12",
+            "spark_conf": {
+              "spark.master": "local[*, 4]",
+              "spark.databricks.cluster.profile": "singleNode"
+            },
+            "azure_attributes": {
+              "first_on_demand": 1,
+              "availability": "SPOT_WITH_FALLBACK_AZURE",
+              "spot_bid_max_price": -1
+            },
+            "node_type_id": "Standard_D4ds_v5",
+            "driver_node_type_id": "Standard_D4ds_v5",
+            "custom_tags": {
+              "ResourceClass": "SingleNode"
+            },
+            "spark_env_vars": {
+              "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+            },
+            "autotermination_minutes": 120,
+            "enable_elastic_disk": true,
+            "init_scripts": [],
+            "single_user_name": "mail2prasanna.g@gmail.com",
+            "enable_local_disk_encryption": false,
+            "data_security_mode": "SINGLE_USER",
+            "runtime_engine": "PHOTON",
+            "assigned_principal": "user:mail2prasanna.g@gmail.com"
           },
           "notebook_task": {
             "notebook_path": "/Shared/mymode/batch_prediction"
