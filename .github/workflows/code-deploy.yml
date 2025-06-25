@@ -59,19 +59,14 @@ jobs:
             },
             "autotermination_minutes": 120,
             "enable_elastic_disk": true,
-            "init_scripts": [],
-            "single_user_name": "mail2prasanna.g@gmail.com",
-            "enable_local_disk_encryption": false,
             "data_security_mode": "SINGLE_USER",
-            "runtime_engine": "PHOTON",
-            "assigned_principal": "user:mail2prasanna.g@gmail.com"
+            "runtime_engine": "PHOTON"
           },
           "notebook_task": {
             "notebook_path": "/Shared/mymode/build_model"
           }
         }
         EOF
-
         databricks runs submit --json-file build_model.json
 
         cat <<EOF > batch_prediction.json
@@ -99,17 +94,13 @@ jobs:
             },
             "autotermination_minutes": 120,
             "enable_elastic_disk": true,
-            "init_scripts": [],
-            "single_user_name": "mail2prasanna.g@gmail.com",
-            "enable_local_disk_encryption": false,
             "data_security_mode": "SINGLE_USER",
-            "runtime_engine": "PHOTON",
-            "assigned_principal": "user:mail2prasanna.g@gmail.com"
+            "runtime_engine": "PHOTON"
           },
           "notebook_task": {
             "notebook_path": "/Shared/mymode/batch_prediction"
           }
         }
         EOF
-
         databricks runs submit --json-file batch_prediction.json
+
