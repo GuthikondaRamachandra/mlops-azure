@@ -57,7 +57,6 @@ jobs:
             "spark_env_vars": {
               "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
             },
-            "autotermination_minutes": 120,
             "enable_elastic_disk": true,
             "data_security_mode": "SINGLE_USER",
             "runtime_engine": "PHOTON"
@@ -92,7 +91,6 @@ jobs:
             "spark_env_vars": {
               "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
             },
-            "autotermination_minutes": 120,
             "enable_elastic_disk": true,
             "data_security_mode": "SINGLE_USER",
             "runtime_engine": "PHOTON"
