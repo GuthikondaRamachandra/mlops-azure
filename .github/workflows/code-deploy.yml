@@ -68,37 +68,5 @@ jobs:
         EOF
         databricks runs submit --json-file build_model.json
 
-        cat <<EOF > batch_prediction.json
-        {
-          "run_name": "Run batch_prediction",
-          "new_cluster": {
-            "num_workers": 0,
-            "spark_version": "15.4.x-scala2.12",
-            "spark_conf": {
-              "spark.master": "local[*, 4]",
-              "spark.databricks.cluster.profile": "singleNode"
-            },
-            "azure_attributes": {
-              "first_on_demand": 1,
-              "availability": "SPOT_WITH_FALLBACK_AZURE",
-              "spot_bid_max_price": -1
-            },
-            "node_type_id": "Standard_D4ds_v5",
-            "driver_node_type_id": "Standard_D4ds_v5",
-            "custom_tags": {
-              "ResourceClass": "SingleNode"
-            },
-            "spark_env_vars": {
-              "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
-            },
-            "enable_elastic_disk": true,
-            "data_security_mode": "SINGLE_USER",
-            "runtime_engine": "PHOTON"
-          },
-          "notebook_task": {
-            "notebook_path": "/Shared/mymode/batch_prediction"
-          }
-        }
-        EOF
-        databricks runs submit --json-file batch_prediction.json
+        
 
